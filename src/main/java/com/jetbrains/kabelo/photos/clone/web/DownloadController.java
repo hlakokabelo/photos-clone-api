@@ -23,7 +23,7 @@ public class DownloadController {
     private PhotosService photosService;
 
     @GetMapping("/download/{id}")
-    public ResponseEntity<byte[]> download(@PathVariable String id) {
+    public ResponseEntity<byte[]> download(@PathVariable Integer id) {
 
         Photo photo = photosService.get(id);
 

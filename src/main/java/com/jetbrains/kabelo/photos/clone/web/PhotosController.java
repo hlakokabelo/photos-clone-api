@@ -1,7 +1,6 @@
 package com.jetbrains.kabelo.photos.clone.web;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,12 +31,12 @@ public class PhotosController {
     }
 
     @GetMapping("/photos")
-    public Collection<Photo> get() {
+    public Iterable<Photo> get() {
         return photosService.get();
     }
 
     @GetMapping("/photo/{id}")
-    public Photo getPhoto(@PathVariable String id) {
+    public Photo getPhoto(@PathVariable Integer id) {
 
         Photo photo = photosService.get(id);
         if (photo == null) {
@@ -47,7 +46,7 @@ public class PhotosController {
     }
 
     @DeleteMapping("/photo/{id}")
-    public void deletePhoto(@PathVariable String id) {
+    public void deletePhoto(@PathVariable Integer id) {
 
         Photo photo = photosService.remove(id);
 
