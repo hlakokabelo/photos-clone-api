@@ -1,10 +1,10 @@
-package com.jetbrains.kabelo.photos.clone;
+package com.jetbrains.kabelo.photos.clone.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PhotosCloneApplicationTests {
+class PhotosCloneApiApplicationTests {
 
 	@Test
 	void contextLoads() {

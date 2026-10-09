@@ -1,4 +1,4 @@
-package com.jetbrains.kabelo.photos.clone.model;
+package com.jetbrains.kabelo.photos.clone.api.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;

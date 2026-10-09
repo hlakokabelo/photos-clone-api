@@ -1,10 +1,10 @@
-package com.jetbrains.kabelo.photos.clone.service;
+package com.jetbrains.kabelo.photos.clone.api.service;
 
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
-import com.jetbrains.kabelo.photos.clone.model.Photo;
-import com.jetbrains.kabelo.photos.clone.repository.PhotoRepository;
+import com.jetbrains.kabelo.photos.clone.api.model.Photo;
+import com.jetbrains.kabelo.photos.clone.api.repository.PhotoRepository;
 
 @Service
 public class PhotosService {

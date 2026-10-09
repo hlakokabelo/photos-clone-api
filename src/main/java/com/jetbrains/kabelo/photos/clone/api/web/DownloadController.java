@@ -1,4 +1,4 @@
-package com.jetbrains.kabelo.photos.clone.web;
+package com.jetbrains.kabelo.photos.clone.api.web;
 
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,14 +14,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.jetbrains.kabelo.photos.clone.model.Photo;
-import com.jetbrains.kabelo.photos.clone.service.PhotosService;
+import com.jetbrains.kabelo.photos.clone.api.model.Photo;
+import com.jetbrains.kabelo.photos.clone.api.service.PhotosService;
 
 @RestController
 @RequestMapping("/api")
 public class DownloadController {
-    @Autowired // Injects the Spring-managed PhotosService bean into this controller
-    private PhotosService photosService;
+    private final PhotosService photosService;
+
+    DownloadController(PhotosService photosService) {
+        this.photosService = photosService;
+    }
 
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> download(@PathVariable Integer id) {

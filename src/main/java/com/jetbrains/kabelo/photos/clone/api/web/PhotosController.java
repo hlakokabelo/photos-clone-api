@@ -1,4 +1,4 @@
-package com.jetbrains.kabelo.photos.clone.web;
+package com.jetbrains.kabelo.photos.clone.api.web;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.jetbrains.kabelo.photos.clone.model.Photo;
-import com.jetbrains.kabelo.photos.clone.service.PhotosService;
+import com.jetbrains.kabelo.photos.clone.api.model.Photo;
+import com.jetbrains.kabelo.photos.clone.api.service.PhotosService;
 
 @RestController
 @RequestMapping("/api")
