@@ -1,8 +1,14 @@
 package com.jetbrains.kabelo.photos.clone.repository;
 
+import java.util.List;
+
+import org.springframework.data.domain.Limit;
 import org.springframework.data.repository.CrudRepository;
 
 import com.jetbrains.kabelo.photos.clone.model.Photo;
 
 public interface PhotoRepository extends CrudRepository<Photo, Integer> {
+    List<Photo> findByContentTypeContainingIgnoreCaseAndFileNameContainingIgnoreCase(String contentType,
+            String fileName, Limit limit);
+
 }

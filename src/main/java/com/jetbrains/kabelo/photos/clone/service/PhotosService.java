@@ -1,5 +1,6 @@
 package com.jetbrains.kabelo.photos.clone.service;
 
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import com.jetbrains.kabelo.photos.clone.model.Photo;
@@ -18,6 +19,12 @@ public class PhotosService {
         return photoRepository.findAll();
     }
 
+    public Iterable<Photo> search(String fileName, String contentType, Integer limit) {
+        return photoRepository.findByContentTypeContainingIgnoreCaseAndFileNameContainingIgnoreCase(
+                contentType, fileName,
+                Limit.of(Math.max(1, limit)));
+    }
+
     public Photo get(Integer id) {
         return photoRepository.findById(id).orElse(null);
     }
@@ -30,11 +37,12 @@ public class PhotosService {
         return photo;
     }
 
-    public Photo save(String fileName, String contentType, byte[] data) {
+    public Photo save(String fileName, String contentType, byte[] data, Long userId) {
         Photo photo = new Photo();
         photo.setFileName(fileName);
         photo.setContentType(contentType);
         photo.setData(data);
+        photo.setUserId(userId);
         photoRepository.save(photo);
         return photo;
     }

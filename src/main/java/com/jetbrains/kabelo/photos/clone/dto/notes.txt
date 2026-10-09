@@ -1,0 +1,3 @@
+Data Transfer Object.
+Its job is to define the shape of data crossing a boundary —
+whether that's a registration request coming in or a user profile response going out.

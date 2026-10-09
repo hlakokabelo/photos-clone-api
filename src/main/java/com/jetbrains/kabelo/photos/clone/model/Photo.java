@@ -16,6 +16,8 @@ public class Photo {
     @NotEmpty
     private String fileName;
 
+    private Long userId;
+
     /*
      * means: that the data field will not be included in the JSON representation of
      * the Photo object when it is serialized. This is useful for preventing
@@ -31,6 +33,14 @@ public class Photo {
 
     public byte[] getData() {
         return data;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public void setData(byte[] data) {
