@@ -30,5 +30,3 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew build
-        env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
