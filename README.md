@@ -1,50 +1,115 @@
 # Photos Clone API
 
-A simple REST API built with Java and Spring Boot for uploading, retrieving, downloading, and deleting photos.
+A REST API built with **Java 21 and Spring Boot 4** for uploading, managing, searching, and downloading photos.
 
-This project was created to practise Spring Boot development, REST APIs, dependency injection, and database operations.
+This project was developed to gain hands-on experience with Spring Boot, RESTful API development, Spring Security, JWT authentication, dependency injection, and database operations.
 
 ## Tech Stack
 
-- Java 21
-- Spring Boot 4
-- Spring Data JDBC
-- H2 Database
-- Gradle
-- Docker
+- **Backend:** Java 21, Spring Boot 4
+- **Database:** H2, Spring Data JDBC
+- **Security:** Spring Security, JWT, BCrypt
+- **API Documentation:** Springdoc OpenAPI (Swagger UI)
+- **Build Tool:** Gradle
+- **Containerization:** Docker
+- **CI/CD:** GitHub Actions
+- **Frontend:** HTML, CSS, JavaScript (upload interface)
 
 ## Features
 
-- Upload photos
-- Retrieve photo information
-- Download photos
+- User registration and login with JWT authentication
+- Secure password hashing using BCrypt
+- Upload photos with a maximum file size of 100 MB
+- Upload multiple photos through a browser interface
+- Associate uploaded photos with user accounts
+- Retrieve individual photos or list all photos
+- Search photos by filename and content type
+- Limit the number of returned results
+- Download photos in their original format
 - Delete photos
-- Validate incoming requests
+- Request validation and custom HTTP error responses
+- Interactive API documentation with Swagger UI
+
+## API Endpoints
+
+| Method | Endpoint             | Description                               |
+| ------ | -------------------- | ----------------------------------------- |
+| GET    | `/api`               | API documentation                         |
+| POST   | `/api/auth/register` | Register a user                           |
+| POST   | `/api/auth/login`    | Authenticate and receive a JWT            |
+| GET    | `/api/photos`        | Retrieve photos with optional filters     |
+| GET    | `/api/photo/{id}`    | Retrieve photo metadata                   |
+| POST   | `/api/photo`         | Upload a photo (JWT required)             |
+| POST   | `/api/photo/manager` | Upload a photo using the manager endpoint |
+| DELETE | `/api/photo/{id}`    | Delete a photo                            |
+| GET    | `/api/download/{id}` | Download a photo                          |
+
+### Filtering Photos
+
+The `/api/photos` endpoint supports optional query parameters:
+
+| Parameter     | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| `fileName`    | Filter by filename (case-insensitive, partial match) |
+| `contentType` | Filter by MIME type                                  |
+| `limit`       | Maximum number of results (default: 1000)            |
+
+Example:
+
+```http
+GET /api/photos?fileName=holiday&contentType=image&limit=10
+```
+
+## Web Interface
+
+A lightweight browser interface is available for uploading photos individually or in batches.
+
+- **Upload Interface:** `/upload.html`
+- **Swagger UI:** `/swagger-ui/index.html`
+- **API Documentation:** `/api`
+
+The upload interface sends a separate API request for each selected image and displays individual upload results.
 
 ## Getting Started
 
-**1. Clone the repository**
+### 1. Clone the repository
 
 ```bash
 git clone <repository-url>
 cd photos-clone
 ```
 
-**2. Run the application**
+### 2. Configure environment variables
 
-On Windows:
+Set the following environment variable before starting the application:
+
+```env
+JWT_SECRET=your-base64-encoded-secret
+```
+
+Generate a secure secret using:
+
+```bash
+openssl rand -base64 32
+```
+
+Do not commit real secrets to GitHub.
+
+### 3. Run the application
+
+**Windows:**
 
 ```bash
 .\gradlew.bat bootRun
 ```
 
-On Linux/macOS:
+**Linux/macOS:**
 
 ```bash
 ./gradlew bootRun
 ```
 
-The API will be available at:
+The application will be available at:
 
 `http://localhost:8080`
 
@@ -56,16 +121,24 @@ Build the Docker image:
 docker build -t photos-clone .
 ```
 
-Run the container:
+Run the container with the JWT secret configured:
 
 ```bash
-docker run -p 8080:8080 photos-clone
+docker run -p 8080:8080 -e JWT_SECRET=<your-secret> photos-clone
 ```
 
 ## Database
 
-The project currently uses H2 for development and testing. Data stored in an in-memory H2 database is lost when the application restarts.
+The application uses **H2** with **Spring Data JDBC** for database operations.
+
+The database stores photo metadata, image data, user accounts, and photo ownership information.
+
+When using an in-memory H2 database, stored data is lost when the application restarts.
 
 ## CI/CD
 
-GitHub Actions is configured to build the project using Gradle on pushes and pull requests to the `main` branch.
+GitHub Actions automatically builds the project using Gradle on pushes and pull requests to the `main` branch.
+
+## Project Purpose
+
+This project serves as a practical introduction to the Spring ecosystem, focusing on REST API design, authentication, persistence, validation, and backend application architecture.
