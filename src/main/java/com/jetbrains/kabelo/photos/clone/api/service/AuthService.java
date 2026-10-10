@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.jetbrains.kabelo.photos.clone.api.dto.*;
-import com.jetbrains.kabelo.photos.clone.api.model.User;
+import com.jetbrains.kabelo.photos.clone.api.model.Users;
 import com.jetbrains.kabelo.photos.clone.api.repository.UserRepository;
 
 @Service
@@ -32,7 +32,7 @@ public class AuthService {
                 this.jwtEncoder = jwtEncoder;
         }
 
-        public User register(RegisterRequest request) {
+        public Users register(RegisterRequest request) {
 
                 // if username already exists, throw an exception
                 if (userRepository.existsByUsername(request.username())) {
@@ -42,7 +42,7 @@ public class AuthService {
                 }
 
                 // else, create a new user
-                User user = new User();
+                Users user = new Users();
                 user.setUsername(request.username());
                 user.setPasswordHash(
                                 passwordEncoder.encode(request.password()));
@@ -52,7 +52,7 @@ public class AuthService {
 
         public String login(LoginRequest request) {
 
-                User user = userRepository
+                Users user = userRepository
                                 .findByUsername(request.username())
                                 .orElseThrow(() -> new ResponseStatusException(
                                                 HttpStatus.UNAUTHORIZED,

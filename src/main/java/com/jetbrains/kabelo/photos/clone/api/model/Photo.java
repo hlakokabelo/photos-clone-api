@@ -7,11 +7,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.validation.constraints.NotEmpty;
 
-@Table("PHOTO")
+@Table("photo")
 public class Photo {
 
     @Id
-    private Integer id;
+    private Long id;
 
     @NotEmpty
     private String fileName;
@@ -51,7 +51,7 @@ public class Photo {
         return fileName;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -59,7 +59,7 @@ public class Photo {
         this.fileName = fileName;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

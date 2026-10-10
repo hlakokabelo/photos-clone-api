@@ -81,10 +81,9 @@ public class SecurityConfig {
                                                                 HttpMethod.POST, "/api/photo")
                                                 .authenticated()
 
-                                                // Block all users from deleting photos for now
-                                                .requestMatchers(
-                                                                HttpMethod.DELETE, "/api/photo/*")
-                                                .denyAll()
+                                                // Only authenticated users can delete photos
+                                                .requestMatchers(HttpMethod.DELETE, "/api/photo/*")
+                                                .authenticated()
 
                                                 // Allow public access to all remaining endpoints
                                                 .anyRequest().permitAll())

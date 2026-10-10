@@ -4,11 +4,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -65,6 +67,26 @@ public class GlobalExceptionHandler {
                                 .body(Map.of(
                                                 "status", 413,
                                                 "error", "Content Too Large",
-                                                "message", "Maximum upload size is 100 MB"));
+                                                "message", "Maximum upload size is 5 MB"));
+        }
+
+        @ExceptionHandler(ResponseStatusException.class)
+        public ResponseEntity<Map<String, Object>> handleResponseStatus(
+                        ResponseStatusException ex,
+                        HttpServletRequest request) {
+
+                HttpStatusCode status = ex.getStatusCode();
+
+                // Reason may be null (e.g. `new ResponseStatusException(NOT_FOUND)` with no
+                // message)
+                String message = ex.getReason() != null
+                                ? ex.getReason()
+                                : status.toString();
+
+                return ResponseEntity.status(status).body(Map.of(
+                                "status", status.value(),
+                                "error", status.toString(),
+                                "message", message,
+                                "path", request.getRequestURI()));
         }
 }

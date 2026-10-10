@@ -4,8 +4,6 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import java.util.Random;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +25,7 @@ public class DownloadController {
     }
 
     @GetMapping("/download/{id}")
-    public ResponseEntity<byte[]> download(@PathVariable Integer id) {
+    public ResponseEntity<byte[]> download(@PathVariable Long id) {
 
         Photo photo = photosService.get(id);
 
@@ -38,12 +36,12 @@ public class DownloadController {
         // Set the content type
         MediaType contentType = MediaType.parseMediaType(photo.getContentType());
 
-        // Randomly choose attachment or inline
-        boolean isAttachment = new Random().nextBoolean();
+        ContentDisposition contentDisposition = ContentDisposition.attachment().filename(photo.getFileName()).build();
 
-        ContentDisposition contentDisposition = isAttachment
-                ? ContentDisposition.attachment().filename(photo.getFileName()).build()
-                : ContentDisposition.inline().filename(photo.getFileName()).build();
+        /**
+         * to display in browser use
+         * ContentDisposition.inline().filename(photo.getFileName()).build();
+         */
 
         // Get the photo data
         byte[] data = photo.getData();

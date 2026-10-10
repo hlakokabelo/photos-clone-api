@@ -2,12 +2,25 @@
 
 A REST API built with **Java 21 and Spring Boot 4** for uploading, managing, searching, and downloading photos.
 
-This project was developed to gain hands-on experience with Spring Boot, RESTful API development, Spring Security, JWT authentication, dependency injection, and database operations.
+This project was developed to gain hands-on experience with Spring Boot, RESTful API development, Spring Security, JWT authentication, dependency injection, and database operations using PostgreSQL.
+
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [API Endpoints](#api-endpoints)
+  - [Filtering Photos](#filtering-photos)
+- [Web Interface](#web-interface)
+- [Getting Started](#getting-started)
+- [Running with Docker](#running-with-docker)
+- [Database](#database)
+- [CI/CD](#cicd)
+- [Project Purpose](#project-purpose)
 
 ## Tech Stack
 
 - **Backend:** Java 21, Spring Boot 4
-- **Database:** H2, Spring Data JDBC
+- **Database:** Neon PostgreSQL, Spring Data JDBC
 - **Security:** Spring Security, JWT, BCrypt
 - **API Documentation:** Springdoc OpenAPI (Swagger UI)
 - **Build Tool:** Gradle
@@ -27,22 +40,22 @@ This project was developed to gain hands-on experience with Spring Boot, RESTful
 - Limit the number of returned results
 - Download photos in their original format
 - Delete photos
-- Request validation and custom HTTP error responses
+- File validation and custom HTTP error responses
+- Persistent cloud database storage using Neon PostgreSQL
 - Interactive API documentation with Swagger UI
 
 ## API Endpoints
 
-| Method | Endpoint             | Description                               |
-| ------ | -------------------- | ----------------------------------------- |
-| GET    | `/api`               | API documentation                         |
-| POST   | `/api/auth/register` | Register a user                           |
-| POST   | `/api/auth/login`    | Authenticate and receive a JWT            |
-| GET    | `/api/photos`        | Retrieve photos with optional filters     |
-| GET    | `/api/photo/{id}`    | Retrieve photo metadata                   |
-| POST   | `/api/photo`         | Upload a photo (JWT required)             |
-| POST   | `/api/photo/manager` | Upload a photo using the manager endpoint |
-| DELETE | `/api/photo/{id}`    | Delete a photo                            |
-| GET    | `/api/download/{id}` | Download a photo                          |
+| Method | Endpoint             | Description                           |
+| ------ | -------------------- | ------------------------------------- |
+| GET    | `/api`               | API documentation                     |
+| POST   | `/api/auth/register` | Register a user                       |
+| POST   | `/api/auth/login`    | Authenticate and receive a JWT        |
+| GET    | `/api/photos`        | Retrieve photos with optional filters |
+| GET    | `/api/photo/{id}`    | Retrieve photo metadata               |
+| POST   | `/api/photo`         | Upload a photo (JWT required)         |
+| DELETE | `/api/photo/{id}`    | Delete a photo (JWT required)         |
+| GET    | `/api/download/{id}` | Download a photo                      |
 
 ### Filtering Photos
 
@@ -76,30 +89,49 @@ The upload interface sends a separate API request for each selected image and di
 
 ```bash
 git clone <repository-url>
-cd photos-clone
+cd photos-clone-api
 ```
 
 ### 2. Configure environment variables
 
-Set the following environment variable before starting the application:
+The application uses Neon PostgreSQL as its database.
+
+Create a Neon project at [neon.tech](https://neon.tech) and obtain your database connection details.
+
+Create a `.env` file in the project root:
 
 ```env
-JWT_SECRET=your-base64-encoded-secret
+DB_URL=jdbc:postgresql://your-neon-host/neondb?sslmode=require
+DB_USER=your_database_username
+DB_PASSWORD=your_database_password
+JWT_SECRET=your_base64_encoded_secret
 ```
 
-Generate a secure secret using:
+Generate a secure JWT secret using:
 
 ```bash
 openssl rand -base64 32
 ```
 
-Do not commit real secrets to GitHub.
+The application reads these values through `application.properties`:
+
+```properties
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASSWORD}
+
+app.jwt.secret=${JWT_SECRET}
+
+spring.sql.init.mode=always
+```
+
+**Important:** Never commit your `.env` file or database credentials to GitHub. Ensure `.env` is included in `.gitignore`.
 
 ### 3. Run the application
 
 **Windows:**
 
-```bash
+```powershell
 .\gradlew.bat bootRun
 ```
 
@@ -109,36 +141,61 @@ Do not commit real secrets to GitHub.
 ./gradlew bootRun
 ```
 
+Ensure the environment variables are available to the process before running the application. Gradle does not automatically load `.env` files.
+
+When using VS Code, the application can also be launched using the Java debugger with `envFile` configured in `.vscode/launch.json`.
+
 The application will be available at:
 
-`http://localhost:8080`
+http://localhost:8080
 
 ## Running with Docker
+
+The application can be packaged and run inside a Docker container.
 
 Build the Docker image:
 
 ```bash
-docker build -t photos-clone .
+docker build -t photos-clone-api .
 ```
 
-Run the container with the JWT secret configured:
+Run the container with the required environment variables:
 
 ```bash
-docker run -p 8080:8080 -e JWT_SECRET=<your-secret> photos-clone
+docker run --env-file .env -p 8080:8080 photos-clone-api
 ```
+
+Docker passes the database credentials and JWT secret to the application at runtime.
+
+The PostgreSQL database is hosted externally on Neon, so a separate database container is not required.
+
+Ensure `.env` is also excluded from the Docker build context through `.dockerignore`.
 
 ## Database
 
-The application uses **H2** with **Spring Data JDBC** for database operations.
+The application uses **Neon PostgreSQL** with **Spring Data JDBC** for database operations.
 
-The database stores photo metadata, image data, user accounts, and photo ownership information.
+The database stores:
 
-When using an in-memory H2 database, stored data is lost when the application restarts.
+- User accounts and BCrypt password hashes
+- Photo metadata, including filenames and content types
+- Uploaded image data using PostgreSQL's `BYTEA` type
+- Photo ownership information through user IDs
+
+The database schema is defined in `src/main/resources/schema.sql` and initialized through Spring Boot's SQL initialization configuration.
+
+Unlike an in-memory H2 database, Neon provides persistent cloud-hosted storage, allowing application data to remain available across application restarts.
+
+Database credentials are managed through environment variables rather than being hardcoded in the application.
 
 ## CI/CD
 
 GitHub Actions automatically builds the project using Gradle on pushes and pull requests to the `main` branch.
 
+The workflow helps verify that the application compiles and passes its configured tests.
+
 ## Project Purpose
 
 This project serves as a practical introduction to the Spring ecosystem, focusing on REST API design, authentication, persistence, validation, and backend application architecture.
+
+It also provides experience with cloud-hosted PostgreSQL, environment-based configuration, Docker containerization, and automated builds using GitHub Actions.

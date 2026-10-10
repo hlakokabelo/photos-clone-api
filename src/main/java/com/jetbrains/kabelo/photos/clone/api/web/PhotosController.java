@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,7 +50,7 @@ public class PhotosController {
     }
 
     @GetMapping("/photo/{id}")
-    public Photo getPhoto(@PathVariable Integer id) {
+    public Photo getPhoto(@PathVariable Long id) {
 
         Photo photo = photosService.get(id);
         if (photo == null) {
@@ -61,14 +60,15 @@ public class PhotosController {
     }
 
     @DeleteMapping("/photo/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePhoto(@PathVariable Integer id) {
+    public ResponseEntity<Void> deletePhoto(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal Jwt jwt) {
 
-        Photo photo = photosService.remove(id);
+        Long userId = Long.valueOf(jwt.getSubject());
 
-        if (photo == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Photo not found");
-        }
+        photosService.deletePhoto(id, userId);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/photo")
@@ -79,23 +79,19 @@ public class PhotosController {
         // Extract the authenticated user's ID from the JWT
         Long userId = Long.valueOf(jwt.getSubject());
 
-        Photo photo = photosService.save(
-                file.getOriginalFilename(),
-                file.getContentType(),
-                file.getBytes(),
-                userId);
+        if (file.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "File cannot be empty");
+        }
 
-        URI location = URI.create("/api/photo/" + photo.getId());
+        String contentType = file.getContentType();
 
-        return ResponseEntity.created(location).body(photo);
-    }
-
-    @PostMapping("/photo/manager")
-    public ResponseEntity<Photo> createManager(
-            @RequestPart("data") MultipartFile file) throws IOException {
-
-        // Extract the authenticated user's ID from the JWT
-        Long userId = 1L; // Hardcoded user ID for manager role
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                    "Only image files are allowed");
+        }
 
         Photo photo = photosService.save(
                 file.getOriginalFilename(),
@@ -107,4 +103,5 @@ public class PhotosController {
 
         return ResponseEntity.created(location).body(photo);
     }
+
 }

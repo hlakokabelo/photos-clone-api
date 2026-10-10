@@ -1,16 +1,14 @@
 package com.jetbrains.kabelo.photos.clone.api.web;
 
 import java.util.Map;
-import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import jakarta.validation.Valid;
 
 import com.jetbrains.kabelo.photos.clone.api.dto.*;
-import com.jetbrains.kabelo.photos.clone.api.model.User;
+import com.jetbrains.kabelo.photos.clone.api.model.Users;
 import com.jetbrains.kabelo.photos.clone.api.service.AuthService;
 
 @RestController
@@ -29,16 +27,10 @@ public class AuthController {
                         @RequestBody // Reads the request body and converts it into a Java object.
                         RegisterRequest request) {
 
-                User user = authService.register(request);
-
-                URI location = ServletUriComponentsBuilder
-                                .fromCurrentContextPath()
-                                .path("/api/users/{id}")
-                                .buildAndExpand(user.getId())
-                                .toUri();
+                Users user = authService.register(request);
 
                 return ResponseEntity
-                                .created(location)
+                                .status(201)
                                 .body(Map.of(
                                                 "id", user.getId(),
                                                 "username", user.getUsername(),

@@ -5,8 +5,8 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Table("USERS")
-public class User {
+@Table("users")
+public class Users {
 
     @Id
     private Long id;
@@ -16,7 +16,7 @@ public class User {
     @JsonIgnore
     private String passwordHash;
 
-    public User() {
+    public Users() {
     }
 
     public Long getId() {
