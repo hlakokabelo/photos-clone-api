@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.jetbrains.kabelo.photos.clone.api.dto.PhotoResponse;
 import com.jetbrains.kabelo.photos.clone.api.model.Photo;
 import com.jetbrains.kabelo.photos.clone.api.service.PhotosService;
 
@@ -35,7 +36,7 @@ public class PhotosController {
 
     // GET /api/photos?fileName=kab&contentType=image&limit=10
     @GetMapping("/photos")
-    public Iterable<Photo> getByFileNameAndContentType(
+    public Iterable<PhotoResponse> getByFileNameAndContentType(
             @RequestParam(defaultValue = "") String fileName,
             @RequestParam(defaultValue = "") String contentType,
             @RequestParam(defaultValue = "1000") int limit) {
@@ -50,12 +51,12 @@ public class PhotosController {
     }
 
     @GetMapping("/photo/{id}")
-    public Photo getPhoto(@PathVariable Long id) {
+    public PhotoResponse getPhoto(@PathVariable Long id) {
 
-        Photo photo = photosService.get(id);
-        if (photo == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Photo not found");
-        }
+        PhotoResponse photo = photosService.get(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Photo not found"));
+
         return photo;
     }
 

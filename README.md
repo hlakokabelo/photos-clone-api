@@ -4,6 +4,10 @@ A REST API built with **Java 21 and Spring Boot 4** for uploading, managing, sea
 
 This project was developed to gain hands-on experience with Spring Boot, RESTful API development, Spring Security, JWT authentication, dependency injection, and database operations using PostgreSQL.
 
+## 🚀 Live API
+
+**Base URL:** [`https://photos-clone-api.onrender.com/api`](https://photos-clone-api.onrender.com/api)
+
 ## Table of Contents
 
 - [Tech Stack](#tech-stack)
