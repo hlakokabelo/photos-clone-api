@@ -6,7 +6,11 @@ This project was developed to gain hands-on experience with Spring Boot, RESTful
 
 ## 🚀 Live API
 
-**Base URL:** [`https://photos-clone-api.onrender.com/api`](https://photos-clone-api.onrender.com/api)
+**Base URL:** https://photos-clone-api.onrender.com
+
+**API Documentation:** [View API](https://photos-clone-api.onrender.com/api)
+
+**Swagger UI:** [Explore API](https://photos-clone-api.onrender.com/swagger-ui/index.html)
 
 ## Table of Contents
 
@@ -17,6 +21,7 @@ This project was developed to gain hands-on experience with Spring Boot, RESTful
 - [Web Interface](#web-interface)
 - [Getting Started](#getting-started)
 - [Running with Docker](#running-with-docker)
+- [Deployment](#deployment)
 - [Database](#database)
 - [CI/CD](#cicd)
 - [Project Purpose](#project-purpose)
@@ -36,7 +41,7 @@ This project was developed to gain hands-on experience with Spring Boot, RESTful
 
 - User registration and login with JWT authentication
 - Secure password hashing using BCrypt
-- Upload photos with a maximum file size of 100 MB
+- Upload images up to 5 MB with file type validation
 - Upload multiple photos through a browser interface
 - Associate uploaded photos with user accounts
 - Retrieve individual photos or list all photos
@@ -81,9 +86,9 @@ GET /api/photos?fileName=holiday&contentType=image&limit=10
 
 A lightweight browser interface is available for uploading photos individually or in batches.
 
-- **Upload Interface:** `/upload.html`
-- **Swagger UI:** `/swagger-ui/index.html`
-- **API Documentation:** `/api`
+- **Upload Interface:** [Open Upload Page](https://photos-clone-api.onrender.com/upload.html)
+- **Swagger UI:** [Explore API](https://photos-clone-api.onrender.com/swagger-ui/index.html)
+- **API Documentation:** [View JSON](https://photos-clone-api.onrender.com/api)
 
 The upload interface sends a separate API request for each selected image and displays individual upload results.
 
@@ -92,7 +97,7 @@ The upload interface sends a separate API request for each selected image and di
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/hlakokabelo/photos-clone-api.git
 cd photos-clone-api
 ```
 
@@ -174,6 +179,14 @@ Docker passes the database credentials and JWT secret to the application at runt
 The PostgreSQL database is hosted externally on Neon, so a separate database container is not required.
 
 Ensure `.env` is also excluded from the Docker build context through `.dockerignore`.
+
+## Deployment
+
+The API is deployed on Render using Docker.
+
+The application is built from the repository's Dockerfile and connects to a Neon-hosted PostgreSQL database.
+
+Environment variables are configured securely in Render.
 
 ## Database
 
